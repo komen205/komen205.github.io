@@ -13,7 +13,7 @@ We received one EXE file with the hash (8d665653f572b550400313feb208b27760480580
 
 When executing it the first time, it pop’s up a Message Box with the Title “Locked”. So now, we have a starting point during our analysis.
 
-![Locked password](../screenshots/screenshot-1.png)
+![Locked password](screenshots/screenshot-1.png)
 
 If we load our program with IDA, we will see that we don’t see any of these strings. During execution, we can see that it will perform XOR operations that will lead us to those strings.
 
