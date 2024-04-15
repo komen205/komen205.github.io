@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://nuno-silva.dev//feed.xml" rel="self" type="application/atom+xml" /><link href="https://nuno-silva.dev//" rel="alternate" type="text/html" /><updated>2024-04-15T22:47:44+01:00</updated><id>https://nuno-silva.dev//feed.xml</id><title type="html">komen205</title><subtitle>Learning</subtitle><entry><title type="html">From Youtube Ads to Android Banking Trojans</title><link href="https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan.html" rel="alternate" type="text/html" title="From Youtube Ads to Android Banking Trojans" /><published>2024-04-15T22:22:43+01:00</published><updated>2024-04-15T22:22:43+01:00</updated><id>https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan</id><content type="html" xml:base="https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan.html"><![CDATA[<p><img src="/assets/youtubead01.png" alt="Youtube Ad advertising android malware" /></p>
+
+<p>A good way to find out malware is to look through the ads, normally there are youtube ads with gambling applications but this time I found a backdoor. This is the first time I actually got a TP backdoor in ads.</p>
+
+<p>The usual signal of this application was that it was a PDF reader and had 1K installations.</p>
+
+<p>AndroidManifest had the permission REQUEST_INSTALL_PACKAGES, which is a signal that the application can install other applications. Used commonly by droppers.
+The next step was to find where the application was using this permission, so I used jadx-gui to decompile the application and search for the permission.
+I searched for package/vnd.android.package-archive but I couldn’t find anything, so I searched for “https://” and found the following code:</p>
+
+<p>Two C2’s were hardcoded in the application in plain text with the same domain, they contained binaries that were downloaded and executed in the device.
+I won’t go into detail how the payload was downloaded and executed, I found this while I was reversing another application and I wanted to provide a quick write-up about it.
+All C2’s were saved in wayback machine.</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">https://dulinare[.]com/pdffile</code></li>
+  <li><code class="language-plaintext highlighter-rouge">https://dulinare[.]com/hanihani</code> (malicious dex file)</li>
+</ul>
+
+<p>Loading the dex file there were only 4 classes, I searched around them and could see an anti-emulator check and geo-location check.
+Seems to be targeting the following ISO’s:</p>
+<ul>
+  <li>es, sk, si, sl, bg, gb, cn, fi, hu, ie, pt</li>
+</ul>
+
+<p>Another C2 was found, this one had the actual backdoor:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">https://sefuban[.]com/1.apk</code></li>
+</ul>
+
+<p>Installing this last APK, quickly asked for accessibility permissions and started to send the following information to the C2:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">http://185.215.113[.]31:85/api/getkeyloggers</code></li>
+  <li><code class="language-plaintext highlighter-rouge">http://185.215.113[.]31:85/api/botupdate</code></li>
+  <li><code class="language-plaintext highlighter-rouge">http://91.215.85[.]55:85/api</code></li>
+</ul>
+
+<p>I haven’t looked much into what the backdoor actually did, but the url /api/getkeyloggers is a good signal that it was a keylogger.
+Inside the C2, there were multiple banks and applications, so it was probably a banking trojan targeting also Portuguese people.</p>
+
+<p>For example, the following banks were targeted and much more:</p>
+<ul>
+  <li>com.binance.dev</li>
+  <li>pt.santander.oneappparticulares</li>
+  <li>com.revolut.business</li>
+  <li>com.santandermovelempresarial.app</li>
+  <li>de.traderepublic.app</li>
+  <li>ie.avantmoney.mobileapp</li>
+  <li>com.comtrade.simba.gbkr</li>
+  <li>dbs.mobileBankingProd</li>
+  <li>com.hrc.eb.mobile.android.hibismobilelon</li>
+  <li>com.hrc.eb.mobile.android.hibismobilevipava</li>
+  <li>bg.ccbmobile.app</li>
+  <li>bg.allianz.banking</li>
+  <li>com.openintegra.dsk_smart_business</li>
+  <li>sk.vub.banking</li>
+  <li>cgd.pt.caixadirectaparticulares</li>
+  <li>wit.android.bcpBankingApp.millennium</li>
+  <li>pt.novobanco.nbsmarter</li>
+  <li>wit.android.bcpBankingApp.activoBank</li>
+  <li>pt.bctt.appbctt</li>
+  <li>pt.cetelem.homebanking</li>
+  <li>pt.oney.oneyapp</li>
+  <li>com.bankinter.portugal.bmb</li>
+  <li>pt.sonaefs.Universo</li>
+  <li>app.wizink.pt</li>
+</ul>
+
+<p><img src="/assets/youtubead02.png" alt="HAR file communicating with C2s" width="100%" height="100%" /></p>
+
+<p>Encryption/decryption algorithm of the requests is XOR with the key 66 decimal.</p>
+
+<p>SHA256 DIGESTS of the samples:</p>
+<ul>
+  <li>95765ba9ade111c579d53d10585f594af6241f32599d084b4646316facc491aa</li>
+  <li>6b49ff162980515a62a716c76b0c170f80dd01e5b533c2a458ddf88bc74eb49d</li>
+</ul>]]></content><author><name></name></author><category term="android" /><category term="malware" /><summary type="html"><![CDATA[]]></summary></entry></feed>
