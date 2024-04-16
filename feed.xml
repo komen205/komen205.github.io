@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://nuno-silva.dev//feed.xml" rel="self" type="application/atom+xml" /><link href="https://nuno-silva.dev//" rel="alternate" type="text/html" /><updated>2024-04-15T22:47:44+01:00</updated><id>https://nuno-silva.dev//feed.xml</id><title type="html">komen205</title><subtitle>Learning</subtitle><entry><title type="html">From Youtube Ads to Android Banking Trojans</title><link href="https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan.html" rel="alternate" type="text/html" title="From Youtube Ads to Android Banking Trojans" /><published>2024-04-15T22:22:43+01:00</published><updated>2024-04-15T22:22:43+01:00</updated><id>https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan</id><content type="html" xml:base="https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan.html"><![CDATA[<p><img src="/assets/youtubead01.png" alt="Youtube Ad advertising android malware" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://nuno-silva.dev//feed.xml" rel="self" type="application/atom+xml" /><link href="https://nuno-silva.dev//" rel="alternate" type="text/html" /><updated>2024-04-16T01:34:36+01:00</updated><id>https://nuno-silva.dev//feed.xml</id><title type="html">komen205</title><subtitle>Learning</subtitle><entry><title type="html">From Youtube Ads to Android Banking Trojans</title><link href="https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan.html" rel="alternate" type="text/html" title="From Youtube Ads to Android Banking Trojans" /><published>2024-04-15T22:22:43+01:00</published><updated>2024-04-15T22:22:43+01:00</updated><id>https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan</id><content type="html" xml:base="https://nuno-silva.dev//android/malware/2024/04/15/from-yt-ads-to-android-malware-banking-trojan.html"><![CDATA[<p><img src="/assets/youtubeads/youtubead01.png" alt="Youtube Ad advertising android malware" /></p>
 
 <p>A good way to find out malware is to look through the ads, normally there are youtube ads with gambling applications but this time I found a backdoor. This is the first time I actually got a TP backdoor in ads.</p>
 
@@ -65,7 +65,7 @@ Inside the C2, there were multiple banks and applications, so it was probably a 
   <li>app.wizink.pt</li>
 </ul>
 
-<p><img src="/assets/youtubead02.png" alt="HAR file communicating with C2s" width="100%" height="100%" /></p>
+<p><img src="/assets/youtubeads/youtubead02.png" alt="HAR file communicating with C2s" width="100%" height="100%" /></p>
 
 <p>Encryption/decryption algorithm of the requests is XOR with the key 66 decimal.</p>
 
@@ -73,4 +73,66 @@ Inside the C2, there were multiple banks and applications, so it was probably a 
 <ul>
   <li>95765ba9ade111c579d53d10585f594af6241f32599d084b4646316facc491aa</li>
   <li>6b49ff162980515a62a716c76b0c170f80dd01e5b533c2a458ddf88bc74eb49d</li>
-</ul>]]></content><author><name></name></author><category term="android" /><category term="malware" /><summary type="html"><![CDATA[]]></summary></entry></feed>
+</ul>]]></content><author><name></name></author><category term="android" /><category term="malware" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">BlackHatQualifications Final Gate</title><link href="https://nuno-silva.dev//ctf/2022/10/11/final-gate-black-hat-qualifications.html" rel="alternate" type="text/html" title="BlackHatQualifications Final Gate" /><published>2022-10-11T00:00:00+01:00</published><updated>2022-10-11T00:00:00+01:00</updated><id>https://nuno-silva.dev//ctf/2022/10/11/final-gate-black-hat-qualifications</id><content type="html" xml:base="https://nuno-silva.dev//ctf/2022/10/11/final-gate-black-hat-qualifications.html"><![CDATA[<p>TLDR:</p>
+<ol>
+  <li>Bypass the anti-debugging validation</li>
+  <li>Verify what arguments were needed</li>
+</ol>
+
+<p>We received one EXE file with the hash (8d665653f572b550400313feb208b277604805803182b15868daeafc80eb40ae).</p>
+
+<p>When executing it the first time, it pop’s up a Message Box with the Title “Locked”. So now, we have a starting point during our analysis.</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-1.png" alt="MessageBox" /></p>
+
+<p>If we load our program with IDA, we will see that we don’t see any of these strings. During execution, we can see that it will perform XOR operations that will lead us to those strings.</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-2.png" alt="XOR strings" /></p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-3.png" alt="XOR strings" /></p>
+
+<p>So now we know that any XOR operation on this EXE could lead us to the flag.</p>
+
+<p>We have one interesting IF statement, before anything is XORified.</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-4.png" alt="XOR strings" /></p>
+
+<p>According to microsoft, https://learn.microsoft.com/en-us/cpp/c-runtime-library/argc-argv-wargv?view=msvc-170, we know that “___argc” is our arguments counter. We also know that always the first argument holds the program name and the second points to the first actual argument. We know now, we will have to send at least one argument to the execution.</p>
+
+<p>The next bytes shown after the argument counter, are related to the TLS callback. According to the IDA documentation, if you press CONTROL+E you can choose the application entry points. We can see that our application has two TLS callbacks.</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-5.png" alt="Entrypoints" /></p>
+
+<p>I won’t go into the details about TLS(Thread-Local-Storage), however all we need to know is that they are executed before our program entry point. And if we take a look at both TLS callbacks, we can see that they are being used to verify if the application is being debugged.</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-6.png" alt="TLS callbacks" /></p>
+
+<p>So now, I thought of three options.</p>
+
+<p>Use x32dbg to patch these flows then use IDA. (didn’t test)
+Manually modify the registers using IDA
+Use x32dbg with ScyllaHide since it is able to bypass Process Environment Block</p>
+
+<p>After updating the registers manually we see that we get a string. We can try to send this as a parameter. We have to update the anti-debug stuff, again.
+<img src="/assets/blackhatqualifications/screenshot-7.png" alt="TLS Callback string" /></p>
+
+<p>During the execution</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-8.png" alt="Arguments" /></p>
+
+<p>“p4s5ing_th3_g4te” has the 16 chars that we want. If we pass this as our argument, it finally enters the while loop and proceeds to the if statement.</p>
+
+<p>And we have our flag.</p>
+
+<p><img src="/assets/blackhatqualifications/screenshot-9.png" alt="Flag" /></p>
+
+<p>Reminder:</p>
+
+<p>When using x32dbg, you have to be careful since with the default settings it breaks on TLSCallbacks. And due to this, the bytes of the function are going to be different due to int3 interruption.
+As shown here:</p>
+
+<p>As you can see, the dl is going to be “CC”. Why? Because the setting “Break on: TLS Callbacks*” in the Preferences on x32dbg is on. Then the debugger does the following:</p>
+
+<p>The debugger is basically replacing the first byte with an int3 instruction. That’s the reason why it ends up with “CC”.</p>
+
+<p>You can replicate the same behavior if you place a breakpoint on the first byte “F8”. So you have to be careful with this.</p>]]></content><author><name></name></author><category term="CTF" /><summary type="html"><![CDATA[TLDR: Bypass the anti-debugging validation Verify what arguments were needed]]></summary></entry></feed>
